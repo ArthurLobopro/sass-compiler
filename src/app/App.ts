@@ -1,7 +1,7 @@
 'use strict'
 
 import * as path from 'path'
-import * as glob from 'glob'
+import glob from 'glob'
 
 import { FileHelper, IFileResolver } from './FileHelper'
 import { SassHelper } from './SassCompileHelper'
