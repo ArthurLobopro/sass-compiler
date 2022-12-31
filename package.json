@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "autoprefixer": "^10.4.13",
+        "commander": "^9.4.1",
         "glob": "7.1.2",
         "postcss": "^8.4.19",
         "sass": "^1.56.1"
