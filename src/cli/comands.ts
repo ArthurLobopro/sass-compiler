@@ -1,6 +1,6 @@
-import { writeFileSync } from "fs";
-import { resolve } from "path";
-import { App } from "../app/App";
+import { writeFileSync } from "fs"
+import { resolve } from "path"
+import { App } from "../app/App"
 
 const app = new App()
 
@@ -22,7 +22,7 @@ export function init() {
         includeItems: null,
         autoprefix: ['> 1%', 'last 2 versions']
     }`
-    writeFileSync(filename, content);
+    writeFileSync(filename, content)
 }
 
 export function compile() {
@@ -31,4 +31,6 @@ export function compile() {
 
 export function watch() {
     app.watch()
+    console.log("Watching files...")
+    console.log("Press Ctrl + C to stop watching.")
 }

@@ -2,10 +2,24 @@
 
 import * as comands from "./comands"
 
-const options = Object.fromEntries( Object.entries(comands).map(([key,value]) => [`--${key}`, value])) 
+import { program } from "commander"
 
-const flags = process.argv.filter( arg => arg.search('--') == 0 && !arg.includes('='))
+program
+    .option("--init", "Crate config file.")
+    .option("--compile", "Compile all files.")
+    .option("--watch", "Compile on Wwatch mode.")
+    .action(options => {
+        if (options.init) {
+            return comands.init()
+        }
 
-flags.forEach(flag => {
-    options?.[flag]?.()
-})
+        if (options.compile) {
+            return comands.compile()
+        }
+
+        if (options.watch) {
+            return comands.watch()
+        }
+    })
+
+program.parse()
