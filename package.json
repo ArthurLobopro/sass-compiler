@@ -13,9 +13,7 @@
     "main": "./out/src/cli/cli.js",
     "license": "MIT",
     "scripts": {
-        "compile": "tsc -p ./",
         "build": "node scripts/build.js",
-        "prepub": "yarn compile && yarn build",
         "create-tag": "node scripts/create-tag.js"
     },
     "dependencies": {
