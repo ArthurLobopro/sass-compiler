@@ -2,21 +2,21 @@ import * as path from 'path'
 import * as fs from "fs"
 
 export interface IFormat {
-    format: "compressed" | "expanded";
-    extensionName: string;
-    savePath?: string;
-    savePathSegmentKeys?: string[];
-    savePathReplaceSegmentsWith?: string;
-    linefeed: "cr" | "crlf" | "lf" | "lfcr";
-    indentType: "space" | "tab";
-    indentWidth: number;
+    format: "compressed" | "expanded"
+    extensionName: string
+    savePath?: string
+    savePathSegmentKeys?: string[]
+    savePathReplaceSegmentsWith?: string
+    linefeed: "cr" | "crlf" | "lf" | "lfcr"
+    indentType: "space" | "tab"
+    indentWidth: number
 }
 
-const configPath = path.resolve(process.cwd(), "sass-compiler.settings.js")
+const configPath = path.resolve(process.cwd(), "sass-compiler.config.js")
 
 const defaultConfigs = {
     generateMap: false,
-    autoPrefix: [],
+    autoprefix: ["> 1%", "last 2 versions"],
     formats: [
         {
             format: "compressed",
@@ -34,12 +34,17 @@ const defaultConfigs = {
 export class Helper {
 
     private static get configSettings() {
-
-        return fs.existsSync(configPath) ? require(configPath) : defaultConfigs
+        const config_file_exists = fs.existsSync(configPath)
+        if (config_file_exists) {
+            console.log("Config file exists")
+            const config = require(configPath)
+            console.log(config)
+            return config
+        }
+        return defaultConfigs
     }
 
     static getConfigSettings<T>(val: string): T {
-        return this.configSettings[val] as T;
+        return this.configSettings[val] as T
     }
-
 }
