@@ -14,7 +14,7 @@
     "license": "MIT",
     "scripts": {
         "compile": "tsc -p ./",
-        "build": "node build/index.js",
+        "build": "node scripts/build.js",
         "prepub": "yarn compile && yarn build",
         "create-tag": "node scripts/create-tag.js"
     },
