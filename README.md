@@ -1,23 +1,17 @@
-# sass-compiler-cli
+# sass-compiler
 
-Compilador para scss baseado na extenção **[Live Sass Compiler](https://github.com/ritwickdey/vscode-live-sass-compiler)**
+Command line sass compiler based on **[Live Sass Compiler](https://github.com/ritwickdey/vscode-live-sass-compiler)** extension.
 
-# Como usar
+## Installation :gear:
 
-Instale o pacote com
+To install the package, run:
 
-```npm install sass-compiler -D```
+```bash
+yarn add sass-compiler -D
+```
 
-ou
+## Usage :hammer:
 
-```yarn add sass-compiler -D```
+To compile sass files, use `yarn sass-compiler --compile`, if you want watch files, add the `--watch` flag.
 
-Caso queira criar um arquivo de configuração use o comando:
-
-```yarn sass-compiler --init```
-
-Para compilar os arquivos scss use o comando:
-
-```yarn sass-compiler --compile```
-
-Para recompilar a cada alteração adicione a flag `--watch`
+To create a config file, run `yarn sass-compiler --init`
