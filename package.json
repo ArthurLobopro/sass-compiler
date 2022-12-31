@@ -1,7 +1,7 @@
 {
     "name": "sass-compiler",
     "description": "Compile Sass or Scss to CSS.",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "author": "Arthur Lobo",
     "keywords": [
         "SASS",
@@ -13,12 +13,12 @@
     "main": "./out/src/cli/cli.js",
     "license": "MIT",
     "scripts": {
-        "compile": "tsc -p ./",
-        "build": "node build/index.js",
-        "prepub": "yarn compile && yarn build"
+        "build": "node scripts/build.js",
+        "create-tag": "node scripts/create-tag.js"
     },
     "dependencies": {
         "autoprefixer": "^10.4.13",
+        "commander": "^9.4.1",
         "glob": "7.1.2",
         "postcss": "^8.4.19",
         "sass": "^1.56.1"

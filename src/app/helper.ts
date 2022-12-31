@@ -36,9 +36,7 @@ export class Helper {
     private static get configSettings() {
         const config_file_exists = fs.existsSync(configPath)
         if (config_file_exists) {
-            console.log("Config file exists")
             const config = require(configPath)
-            console.log(config)
             return config
         }
         return defaultConfigs
