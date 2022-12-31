@@ -15,7 +15,8 @@
     "scripts": {
         "compile": "tsc -p ./",
         "build": "node build/index.js",
-        "prepub": "yarn compile && yarn build"
+        "prepub": "yarn compile && yarn build",
+        "create-tag": "node scripts/create-tag.js"
     },
     "dependencies": {
         "autoprefixer": "^10.4.13",
