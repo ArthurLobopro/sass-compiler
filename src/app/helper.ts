@@ -4,12 +4,6 @@ import * as fs from "fs"
 export interface IFormat {
     format: "compressed" | "expanded"
     extensionName: string
-    savePath?: string
-    savePathSegmentKeys?: string[]
-    savePathReplaceSegmentsWith?: string
-    linefeed: "cr" | "crlf" | "lf" | "lfcr"
-    indentType: "space" | "tab"
-    indentWidth: number
 }
 
 const configPath = path.resolve(process.cwd(), "sass-compiler.config.js")
@@ -20,8 +14,7 @@ const defaultConfigs = {
     formats: [
         {
             format: "compressed",
-            extensionName: ".css",
-            savePath: null
+            extensionName: ".css"
         }
     ],
     excludeList: [
