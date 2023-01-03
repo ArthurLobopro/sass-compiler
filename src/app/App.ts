@@ -97,9 +97,9 @@ export class App {
     ) {
 
 
-        const generateMap = Helper.getConfigSettings<boolean>("generateMap"),
-            compileResult = SassHelper.compileOne(sassPath, targetCssUri, mapFileUri, options),
-            promises: Promise<IFileResolver>[] = []
+        const generateMap = Helper.getConfigSettings<boolean>("generateMap")
+        const compileResult = SassHelper.compileOne(sassPath, targetCssUri, mapFileUri, options)
+        const promises: Promise<IFileResolver>[] = []
 
         let autoprefixerTarget = Helper.getConfigSettings<Array<string> | boolean | null>(
             "autoprefix"
@@ -109,8 +109,8 @@ export class App {
             return false
         }
 
-        let css: string | undefined = compileResult.result?.css.toString(),
-            map: string | undefined | null = compileResult.result?.map?.toString()
+        let css: string | undefined = compileResult.result?.css
+        let map: string | undefined | null = compileResult.result?.map
 
         if (css === undefined) {
             return false
@@ -178,19 +178,16 @@ export class App {
             sassPaths.map(async (sassPath, pathIndex) => {
 
 
-                const workspaceFolder = App.getWorkspaceFolder(sassPath),
-                    formats = Helper.getConfigSettings<IFormat[]>("formats")
+                const workspaceFolder = App.getWorkspaceFolder(sassPath)
+                const formats = Helper.getConfigSettings<IFormat[]>("formats")
 
                 await Promise.all(
                     formats.map(async (format, formatIndex) => {
-
-
                         // Each format
                         const options = this.getSassOptions(format),
                             cssMapUri = await this.generateCssAndMapUri(
                                 sassPath,
                                 format
-
                             )
 
                         await this.GenerateCssAndMap(
@@ -232,6 +229,7 @@ export class App {
         format: IFormat
     ) {
         const extensionName = format.extensionName || ".css"
+
         const cssUri = filePath.substring(0, filePath.lastIndexOf(".")) + extensionName
 
         return {

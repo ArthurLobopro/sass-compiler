@@ -20,7 +20,7 @@ export class SassHelper {
         targetCssUri: string,
         mapFileUri: string,
         options: compiler.Options<"sync">,
-    ): { result: Omit<compiler.LegacyResult, "stats"> | null; errorString: string | null } {
+    ) {
         const generateMap = Helper.getConfigSettings<boolean>("generateMap"),
             data: compiler.Options<"sync"> = {}
 
@@ -31,20 +31,22 @@ export class SassHelper {
                 message: string,
                 options: { deprecation: boolean; span?: compiler.SourceSpan; stack?: string }
             ) => {
-                console.warn(message)
+                console.warn([message].concat(this.format(options.span, options.stack, options.deprecation)))
             },
-            debug: (message: string, options: { span?: compiler.SourceSpan }) => { },
+            debug: (message: string, options: { span?: compiler.SourceSpan }) => {
+                console.log([message].concat(this.format(options.span)))
+            },
         }
 
         try {
             const compile_returns = compiler.compile(SassPath, {
                 ...data,
                 sourceMap: generateMap,
-                logger: data.logger,
+                logger: data.logger
             })
             const new_result = {
-                css: Buffer.from(compile_returns.css.toString()),
-                ...(generateMap && { map: Buffer.from(JSON.stringify(compile_returns.sourceMap)) } || {}),
+                css: compile_returns.css.toString(),
+                ...(generateMap && { map: JSON.stringify(compile_returns.sourceMap) } || {}),
             }
 
             return { result: new_result, errorString: null }
