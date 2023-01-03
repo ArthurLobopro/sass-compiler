@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'fs'
+import * as path from 'path'
 
 export interface IFileResolver {
     FileUri: string,
@@ -14,34 +14,32 @@ export class FileHelper {
                 resolve({
                     FileUri: targetFileUri,
                     Exception: err,
-                });
-            });
-        });
+                })
+            })
+        })
     }
 
     static writeToMultipleFile(targetFileUris: string[], data: string[]): Promise<IFileResolver[]> {
         return new Promise<IFileResolver[]>((resolve) => {
-            const promises: Promise<IFileResolver>[] = [];
+            const promises: Promise<IFileResolver>[] = []
 
             for (let i = 0; i < targetFileUris.length; i++) {
-                promises.push(this.writeToOneFile(targetFileUris[i], data[i]));
+                promises.push(this.writeToOneFile(targetFileUris[i], data[i]))
             }
 
-            Promise.all(promises).then((errList) => resolve(errList));
-        });
+            Promise.all(promises).then((errList) => resolve(errList))
+        })
     }
 
     static MakeDirIfNotAvailable(dir: string): void {
         if (fs.existsSync(dir)) {
-            return;
+            return
         }
 
         if (!fs.existsSync(path.dirname(dir))) {
-            this.MakeDirIfNotAvailable(path.dirname(dir));
+            this.MakeDirIfNotAvailable(path.dirname(dir))
         }
 
-        fs.mkdirSync(dir);
+        fs.mkdirSync(dir)
     }
-
-
 }

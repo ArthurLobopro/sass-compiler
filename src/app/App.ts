@@ -8,12 +8,10 @@ import { SassHelper } from './SassCompileHelper'
 import { Helper, IFormat } from './helper'
 import { showError, delay } from './Util'
 import { watchFile } from 'fs'
-import { LegacyFileOptions } from 'sass'
+import { Options } from 'sass'
 
 import autoprefixer from "autoprefixer"
 import BrowserslistError from "browserslist/error"
-// import fs from "fs";
-// import picomatch from "picomatch";
 import postcss from "postcss"
 
 export class App {
@@ -35,33 +33,6 @@ export class App {
     compileAllFiles() {
         this.GenerateAllCssAndMap()
     }
-
-    // async compileOnSave() {
-    //     if (!this.isWatching) return;
-
-    //     let currentFile = vscode.window.activeTextEditor.document.fileName;
-    //     if (!this.isASassFile(currentFile, true)) return;
-    //     // if (!(await this.isSassFileIncluded(fileUri, '**/*.s[a|c]ss'))) return;
-
-
-    //     if (!this.isASassFile(currentFile)) { // Partial Or not
-    //         await this.GenerateAllCssAndMap()
-    //     }
-    //     else {
-    //         let formats = Helper.getConfigSettings<IFormat[]>('formats');
-    //         let sassPath = currentFile;
-    //         formats.forEach(format => { // Each format
-    //             let options = this.getCssStyle(format.format);
-    //             let cssMapPath = this.generateCssAndMapUri(sassPath, format.savePath, format.extensionName);
-    //             this.GenerateCssAndMap(sassPath, cssMapPath.css, cssMapPath.map, options)
-    //                 .then(() => {
-
-    //                 });
-    //         });
-    //     }
-
-    // }
-
 
     async isSassFileIncluded(sassPath: string, queryPatten = '**/[^_]*.s[a|c]ss') {
         let files = await this.getSassFiles(queryPatten)
@@ -107,13 +78,7 @@ export class App {
         })
     }
 
-    /**
-     * [Deprecated]
-     * Find ALL Sass & Scss from workspace & It also exclude Sass/Scss from exclude list settings
-     * @param callback - callback(filepaths) with be called with Uri(s) of Sass/Scss(s) (string[]).
-     */
     private findAllSaasFilesAsync(callback) {
-
         this.getSassFiles().then(files => callback(files))
     }
 
@@ -128,26 +93,24 @@ export class App {
         sassPath: string,
         targetCssUri: string,
         mapFileUri: string,
-        options: LegacyFileOptions<"sync">
+        options: Options<"sync">
     ) {
 
 
-        const generateMap = Helper.getConfigSettings<boolean>("generateMap"),
-            compileResult = SassHelper.compileOne(sassPath, targetCssUri, mapFileUri, options),
-            promises: Promise<IFileResolver>[] = []
+        const generateMap = Helper.getConfigSettings<boolean>("generateMap")
+        const compileResult = SassHelper.compileOne(sassPath, targetCssUri, mapFileUri, options)
+        const promises: Promise<IFileResolver>[] = []
 
         let autoprefixerTarget = Helper.getConfigSettings<Array<string> | boolean | null>(
             "autoprefix"
         )
 
         if (compileResult.errorString !== null) {
-
-
             return false
         }
 
-        let css: string | undefined = compileResult.result?.css.toString(),
-            map: string | undefined | null = compileResult.result?.map?.toString()
+        let css: string | undefined = compileResult.result?.css
+        let map: string | undefined | null = compileResult.result?.map
 
         if (css === undefined) {
             return false
@@ -158,7 +121,6 @@ export class App {
         }
 
         if (autoprefixerTarget != false) {
-
             try {
                 const autoprefixerResult = await this.autoprefix(
                     css,
@@ -170,7 +132,6 @@ export class App {
                 map = autoprefixerResult.map
             } catch (err) {
                 if (err instanceof BrowserslistError) {
-
                     return false
                 } else {
                     throw err
@@ -188,8 +149,6 @@ export class App {
 
         const fileResolvers = await Promise.all(promises)
 
-
-
         fileResolvers.forEach((fileResolver) => {
             if (fileResolver.Exception) {
                 console.error("error :", fileResolver)
@@ -197,22 +156,12 @@ export class App {
 
             }
         })
+
         return true
     }
 
     private static getWorkspaceFolder(filePath: string) {
         const workspaceFolder = this.basePath
-        const filename = filePath.toLowerCase()
-
-        // if (workspaceFolder) {
-        //     OutputWindow.Show(OutputLevel.Trace, "Found the workspace folder", [
-        //         `Workspace Name: ${workspaceFolder.name}`,
-        //     ]);
-        // } else if (filename.endsWith(".sass") || filename.endsWith(".scss")) {
-        //     OutputWindow.Show(OutputLevel.Warning, "Warning: File is not in a workspace", [
-        //         `Path: ${filePath}`,
-        //     ]);
-        // }
 
         return workspaceFolder
     }
@@ -229,19 +178,16 @@ export class App {
             sassPaths.map(async (sassPath, pathIndex) => {
 
 
-                const workspaceFolder = App.getWorkspaceFolder(sassPath),
-                    formats = Helper.getConfigSettings<IFormat[]>("formats")
+                const workspaceFolder = App.getWorkspaceFolder(sassPath)
+                const formats = Helper.getConfigSettings<IFormat[]>("formats")
 
                 await Promise.all(
                     formats.map(async (format, formatIndex) => {
-
-
                         // Each format
                         const options = this.getSassOptions(format),
                             cssMapUri = await this.generateCssAndMapUri(
                                 sassPath,
                                 format
-
                             )
 
                         await this.GenerateCssAndMap(
@@ -255,7 +201,6 @@ export class App {
             })
         )
     }
-
 
     async watch() {
         const sassFiles = []
@@ -279,120 +224,11 @@ export class App {
         }
     }
 
-    // private GenerateAllCssAndMap() {
-    //     let formats = Helper.getConfigSettings<IFormat[]>('formats');
-
-    //     return new Promise((resolve) => {
-    //         this.findAllSaasFilesAsync((sassPaths: string[]) => {
-
-    //             let promises = [];
-    //             sassPaths.forEach((sassPath) => {
-    //                 formats.forEach(format => { // Each format
-    //                     let options = this.getCssStyle(format.format);
-    //                     let cssMapUri = this.generateCssAndMapUri(sassPath, format.savePath, format.extensionName);
-    //                     promises.push(this.GenerateCssAndMap(sassPath, cssMapUri.css, cssMapUri.map, options));
-    //                 });
-    //             });
-
-    //             Promise.all(promises).then((e) => resolve(e));
-    //         });
-    //     });
-    // }
-
-    /**
-     * Generate Map Object
-     * @param mapObject Generated Map object form Sass.js library
-     * @param targetCssUri Css URI
-     */
-    private GenerateMapObject(mapObject, targetCssUri: string) {
-        let map = {
-            'version': 3,
-            'mappings': '',
-            'sources': [],
-            'names': [],
-            'file': ''
-        }
-        map.mappings = mapObject.mappings
-        map.file = path.basename(targetCssUri)
-        mapObject.sources.forEach((source: string) => {
-            // path starts with ../saas/<path> or ../< path>
-            if (source.startsWith('../sass/')) {
-                source = source.substring('../sass/'.length)
-            }
-            else if (source.startsWith('../')) {
-                source = source.substring('../'.length)
-            }
-            if (process.platform !== 'win32') {
-                source = '/' + source // for linux, maybe for MAC too
-            }
-
-            let testpath = path.relative(
-                path.dirname(targetCssUri), source)
-            testpath = testpath.replace(/\\/gi, '/')
-            map.sources.push(testpath)
-        })
-
-        return map
-
-        //  this.writeToFileAsync(mapFileUri, JSON.stringify(map, null, 4));
-    }
-
     private async generateCssAndMapUri(
         filePath: string,
         format: IFormat
     ) {
-
-
         const extensionName = format.extensionName || ".css"
-
-        // if (workspaceRoot) {
-
-        //     const workspacePath = workspaceRoot.uri.fsPath;
-        //     let generatedUri = null;
-
-        //     // NOTE: If all SavePath settings are `NULL`, CSS Uri will be same location as SASS
-        //     if (format.savePath) {
-
-
-        //         if (format.savePath.startsWith("~")) {
-
-
-        //             generatedUri = path.join(path.dirname(filePath), format.savePath.substring(1));
-        //         } else {
-
-
-        //             generatedUri = path.join(workspacePath, format.savePath);
-        //         }
-
-        //         FileHelper.MakeDirIfNotAvailable(generatedUri);
-
-        //         filePath = path.join(generatedUri, path.basename(filePath));
-        //     } else if (
-        //         format.savePathSegmentKeys &&
-        //         format.savePathSegmentKeys.length &&
-        //         format.savePathReplaceSegmentsWith
-        //     ) {
-
-
-        //         generatedUri = path.join(
-        //             workspacePath,
-        //             path
-        //                 .dirname(filePath)
-        //                 .substring(workspacePath.length + 1)
-        //                 .split(path.sep)
-        //                 .map((folder) => {
-        //                     return format.savePathSegmentKeys!.indexOf(folder) >= 0
-        //                         ? format.savePathReplaceSegmentsWith
-        //                         : folder;
-        //                 })
-        //                 .join(path.sep)
-        //         );
-
-        //         FileHelper.MakeDirIfNotAvailable(generatedUri);
-
-        //         filePath = path.join(generatedUri, path.basename(filePath));
-        //     }
-        // }
 
         const cssUri = filePath.substring(0, filePath.lastIndexOf(".")) + extensionName
 
@@ -427,8 +263,6 @@ export class App {
 
         if (browsers === true) {
             process.env.BROWSERSLIST_DISABLE_CACHE = "1"
-
-
         }
 
         try {
@@ -451,10 +285,7 @@ export class App {
                 }
 
                 body.push(warn.text)
-
-
             })
-
 
             return {
                 css: result.css,
@@ -463,8 +294,6 @@ export class App {
         } finally {
             if (browsers === true) {
                 process.env.BROWSERSLIST_DISABLE_CACHE = oldBrowserlistCache
-
-
             }
         }
     }
