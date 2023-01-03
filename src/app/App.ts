@@ -12,8 +12,6 @@ import { Options } from 'sass'
 
 import autoprefixer from "autoprefixer"
 import BrowserslistError from "browserslist/error"
-// import fs from "fs";
-// import picomatch from "picomatch";
 import postcss from "postcss"
 
 export class App {
@@ -35,33 +33,6 @@ export class App {
     compileAllFiles() {
         this.GenerateAllCssAndMap()
     }
-
-    // async compileOnSave() {
-    //     if (!this.isWatching) return;
-
-    //     let currentFile = vscode.window.activeTextEditor.document.fileName;
-    //     if (!this.isASassFile(currentFile, true)) return;
-    //     // if (!(await this.isSassFileIncluded(fileUri, '**/*.s[a|c]ss'))) return;
-
-
-    //     if (!this.isASassFile(currentFile)) { // Partial Or not
-    //         await this.GenerateAllCssAndMap()
-    //     }
-    //     else {
-    //         let formats = Helper.getConfigSettings<IFormat[]>('formats');
-    //         let sassPath = currentFile;
-    //         formats.forEach(format => { // Each format
-    //             let options = this.getCssStyle(format.format);
-    //             let cssMapPath = this.generateCssAndMapUri(sassPath, format.savePath, format.extensionName);
-    //             this.GenerateCssAndMap(sassPath, cssMapPath.css, cssMapPath.map, options)
-    //                 .then(() => {
-
-    //                 });
-    //         });
-    //     }
-
-    // }
-
 
     async isSassFileIncluded(sassPath: string, queryPatten = '**/[^_]*.s[a|c]ss') {
         let files = await this.getSassFiles(queryPatten)
