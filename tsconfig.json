@@ -2,9 +2,8 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es2020",
-        "outDir": "npm",
+        "outDir": "dist",
         "sourceMap": false,
-        "rootDir": ".",
         "esModuleInterop": true,
     },
     "exclude": [
