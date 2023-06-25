@@ -1,14 +1,14 @@
 'use strict'
 
-import * as path from 'path'
 import glob from 'glob'
+import * as path from 'path'
 
-import { FileHelper, IFileResolver } from './FileHelper'
-import { SassHelper } from './SassCompileHelper'
-import { Helper, IFormat } from './helper'
-import { showError, delay } from './Util'
 import { watchFile } from 'fs'
 import { Options } from 'sass'
+import { FileHelper, IFileResolver } from './FileHelper'
+import { SassHelper } from './SassCompileHelper'
+import { delay } from './Util'
+import { Helper, IFormat } from './helper'
 
 import autoprefixer from "autoprefixer"
 import BrowserslistError from "browserslist/error"
@@ -210,6 +210,14 @@ export class App {
                     if (!sassFiles.includes(sassPath)) {
                         sassFiles.push(sassPath)
                         let formats = Helper.getConfigSettings<IFormat[]>('formats')
+
+                        //First compile
+                        formats.forEach(async format => {
+                            let options = this.getSassOptions(format)
+                            let cssMapUri = await this.generateCssAndMapUri(sassPath, format)
+                            this.GenerateCssAndMap(sassPath, cssMapUri.css, cssMapUri.map, options)
+                        })
+
                         watchFile(sassPath, () => {
                             formats.forEach(async format => {
                                 let options = this.getSassOptions(format)
@@ -220,7 +228,7 @@ export class App {
                     }
                 })
             })
-            await delay(1000)
+            await delay(500)
         }
     }
 

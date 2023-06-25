@@ -7,7 +7,6 @@ export interface IFileResolver {
 }
 
 export class FileHelper {
-
     static writeToOneFile(targetFileUri: string, data: string): Promise<IFileResolver> {
         return new Promise<IFileResolver>((resolve) => {
             fs.writeFile(targetFileUri, data, "utf8", (err) => {

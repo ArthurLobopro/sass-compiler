@@ -1,5 +1,5 @@
-import * as path from 'path'
 import * as fs from "fs"
+import * as path from 'path'
 
 export interface IFormat {
     format: "compressed" | "expanded"
@@ -25,7 +25,6 @@ const defaultConfigs = {
 }
 
 export class Helper {
-
     private static get configSettings() {
         const config_file_exists = fs.existsSync(configPath)
         if (config_file_exists) {

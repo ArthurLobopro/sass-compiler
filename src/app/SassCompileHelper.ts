@@ -1,10 +1,8 @@
-import { IFormat } from './helper'
-import { LegacyException } from "sass"
 import * as compiler from "sass"
-import { Helper } from './helper'
+import { LegacyException } from "sass"
+import { Helper, IFormat } from './helper'
 
 export class SassHelper {
-
     static toSassOptions(format: IFormat): compiler.Options<"sync"> {
         return {
             style: format.format,
